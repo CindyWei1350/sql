@@ -4,17 +4,23 @@
 
 --SELECT
 /* 1. Write a query that returns everything in the customer table. */
-
+SELECT *
+FROM customer;
 
 
 /* 2. Write a query that displays all of the columns and 10 rows from the cus- tomer table, 
 sorted by customer_last_name, then customer_first_ name. */
-
+SELECT *
+FROM customer
+ORDER BY customer_last_name, customer_first_name
+LIMIT 10;
 
 
 --WHERE
 /* 1. Write a query that returns all customer purchases of product IDs 4 and 9. */
-
+SELECT *
+FROM customer_purchases
+WHERE product_id = 4 OR product_id = 9;
 
 
 /*2. Write a query that returns all customer purchases and a new calculated column 'price' (quantity * cost_to_customer_per_qty), 
@@ -23,10 +29,17 @@ filtered by customer IDs between 8 and 10 (inclusive) using either:
 	2.  one condition using BETWEEN
 */
 -- option 1
+ALTER TABLE customer_purchases
+ADD price AS (quantity * cost_to_customer_per_qty);
 
+SELECT *
+FROM customer_purchases
+WHERE customer_id BETWEEN 8 AND 10;
 
 -- option 2
-
+SELECT *
+FROM customer_purchases
+WHERE customer_id < 11 AND customer_id > 7;
 
 
 --CASE
@@ -34,20 +47,42 @@ filtered by customer IDs between 8 and 10 (inclusive) using either:
 Using the product table, write a query that outputs the product_id and product_name
 columns and add a column called prod_qty_type_condensed that displays the word “unit” 
 if the product_qty_type is “unit,” and otherwise displays the word “bulk.” */
-
+SELECT
+	product_id,
+	product_name,
+	CASE	
+		WHEN product_qty_type = "unit" THEN "unit"
+		ELSE  "bulk"
+	END AS prod_qty_type_condensed
+FROM product;
 
 
 /* 2. We want to flag all of the different types of pepper products that are sold at the market. 
 add a column to the previous query called pepper_flag that outputs a 1 if the product_name 
 contains the word “pepper” (regardless of capitalization), and otherwise outputs 0. */
+SELECT
+	product_id,
+	product_name,
+	CASE	
+		WHEN product_qty_type = "unit" THEN "unit"
+		ELSE  "bulk"
+	END AS prod_qty_type_condensed,
+	CASE	
+		WHEN UPPER(product_name) LIKE UPPER("%pepper%") THEN 1
+		ELSE 0
+	END AS pepper_flag
+FROM product;
 
 
 
 --JOIN
 /* 1. Write a query that INNER JOINs the vendor table to the vendor_booth_assignments table on the 
 vendor_id field they both have in common, and sorts the result by vendor_name, then market_date. */
-
-
+SELECT *
+FROM vendor
+INNER JOIN vendor_booth_assignments
+ON vendor.vendor_id = vendor_booth_assignments.vendor_id
+ORDER BY vendor_name, market_date;
 
 
 /* SECTION 3 */
@@ -55,7 +90,9 @@ vendor_id field they both have in common, and sorts the result by vendor_name, t
 -- AGGREGATE
 /* 1. Write a query that determines how many times each vendor has rented a booth 
 at the farmer’s market by counting the vendor booth assignments per vendor_id. */
-
+SELECT vendor_id, COUNT (vendor_id)
+FROM vendor_booth_assignments
+GROUP BY vendor_id;
 
 
 /* 2. The Farmer’s Market Customer Appreciation Committee wants to give a bumper 
@@ -63,6 +100,16 @@ sticker to everyone who has ever spent more than $2000 at the market. Write a qu
 of customers for them to give stickers to, sorted by last name, then first name. 
 
 HINT: This query requires you to join two tables, use an aggregate function, and use the HAVING keyword. */
+SELECT 
+	customer.customer_id, 
+	customer.customer_last_name, 
+	customer.customer_first_name,
+	SUM(customer_purchases.price)
+FROM customer
+INNER JOIN customer_purchases
+	ON customer_purchases.customer_id = customer.customer_id
+GROUP BY customer.customer_last_name, customer.customer_first_name
+HAVING SUM(customer_purchases.price) > 2000;
 
 
 
@@ -78,6 +125,12 @@ When inserting the new vendor, you need to appropriately align the columns to be
 VALUES(col1,col2,col3,col4,col5) 
 */
 
+CREATE TABLE temp.new_vendor AS
+SELECT *
+FROM vendor;
+
+INSERT INTO temp.new_vendor
+VALUES(Thomass Superfood Store, a Fresh Focused store, owned by Thomas Rosenthal);
 
 
 -- Date
@@ -93,4 +146,6 @@ Remember that money spent is quantity*cost_to_customer_per_qty.
 
 HINTS: you will need to AGGREGATE, GROUP BY, and filter...
 but remember, STRFTIME returns a STRING for your WHERE statement!! */
+
+
 
