@@ -54,7 +54,7 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 **HINT:** search type 1 vs type 2 slowly changing dimensions. 
 
 ```
-Your answer...
+Type 2 retains changes, while type 1 overwrites them.
 ```
 
 ***
@@ -183,5 +183,6 @@ Consider, for example, concepts of labour, bias, LLM proliferation, moderating c
 
 
 ```
-Your thoughts...
+Machines depend on manual labour and with manual labour involved in things such as labeling data,
+there would be inherently biases that must be ruled out.
 ```
