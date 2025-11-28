@@ -207,3 +207,7 @@ Consider, for example, concepts of fariness, inequality, social structures, marg
 ```
 Your thoughts...
 ```
+
+Recent databases and data systems have started to record a person's preferred pronouns, which shows recognition
+and promotion of equality among those of different gender identity.
+
